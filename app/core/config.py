@@ -25,6 +25,13 @@ class Settings(BaseSettings):
 
     bootstrap_admin_email: Optional[str] = Field(None, env="BOOTSTRAP_ADMIN_EMAIL")
     bootstrap_admin_password: Optional[str] = Field(None, env="BOOTSTRAP_ADMIN_PASSWORD")
+    openrouter_api_key: Optional[str] = Field(None, env="OPENROUTER_API_KEY")
+    openrouter_translation_model: str = Field(
+        "openai/gpt-4.1-mini", env="OPENROUTER_TRANSLATION_MODEL"
+    )
+    openrouter_base_url: str = Field(
+        "https://openrouter.ai/api/v1", env="OPENROUTER_BASE_URL"
+    )
 
     invite_expire_hours: int = Field(24, env="INVITE_EXPIRE_HOURS")
     password_reset_expire_minutes: int = Field(30, env="PASSWORD_RESET_EXPIRE_MINUTES")

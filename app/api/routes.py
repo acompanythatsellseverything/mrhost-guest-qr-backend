@@ -4,6 +4,7 @@ from app.api.routers.admin import auth as admin_auth
 from app.api.routers.admin import consent as admin_consent
 from app.api.routers.admin import faq as admin_faq
 from app.api.routers.admin import listings as admin_listings
+from app.api.routers.admin import localization as admin_localization
 from app.api.routers.admin import logs as admin_logs
 from app.api.routers.admin import page_description as admin_page_description
 from app.api.routers.admin import specific_item as admin_specific_item
@@ -22,6 +23,7 @@ router.include_router(public_guide.router)
 
 router.include_router(admin_auth.router)
 router.include_router(admin_listings.router)
+router.include_router(admin_localization.router)
 router.include_router(admin_qr.router)
 router.include_router(admin_consent.router)
 router.include_router(admin_faq.router)
