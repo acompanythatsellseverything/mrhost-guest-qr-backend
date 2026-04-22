@@ -17,6 +17,10 @@ services:
       - ACCESS_TOKEN_EXPIRE_MINUTES=60
       - QR_TOKEN_EXPIRE_MINUTES=1440
       - JWT_ALGORITHM=HS256
+      - PUBLIC_FRONTEND_BASE_URL=${PUBLIC_FRONTEND_BASE_URL:-https://web.mrhost.top}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENROUTER_TRANSLATION_MODEL=${OPENROUTER_TRANSLATION_MODEL:-openai/gpt-4.1-mini}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
     ports:
       - "8000:8000"
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
