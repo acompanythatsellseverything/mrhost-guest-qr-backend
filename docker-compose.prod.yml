@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:15
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -11,6 +12,7 @@ services:
     build: .
     depends_on:
       - db
+    restart: always
     environment:
       - DATABASE_URL=postgresql+psycopg://postgres:postgres@db:5432/mrhost
       - SECRET_KEY=super-secret
@@ -22,7 +24,7 @@ services:
       - OPENROUTER_TRANSLATION_MODEL=${OPENROUTER_TRANSLATION_MODEL:-openai/gpt-4.1-mini}
       - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
     ports:
-      - "8000:8000"
+      - "18110:8000"
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
 volumes:
   pgdata:
