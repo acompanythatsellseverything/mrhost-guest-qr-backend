@@ -4,7 +4,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 
-DEFAULT_TARGET_LANGUAGES = ["es", "ru", "uk", "pt", "it", "fr"]
+DEFAULT_TARGET_LANGUAGES = ["es", "ru", "uk", "pt", "it", "fr", "pl", "nl"]
 
 
 class LocalizationKind(str, Enum):
