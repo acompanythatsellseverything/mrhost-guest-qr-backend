@@ -181,6 +181,7 @@ def test_consent_submission_with_stale_version(client: SimpleTestClient, db_sess
         "language_code": "en",
         "decision": "accept",
         "email": "guest@example.com",
+        "marketing_consent": False,
     }
     response = client.post(
         f"/public/listings/{listing.id}/consent",
@@ -198,6 +199,7 @@ def test_consent_submission_success(client: SimpleTestClient, db_session: Sessio
         "language_code": "en",
         "decision": "accept",
         "email": "guest@example.com",
+        "marketing_consent": True,
     }
     response = client.post(
         f"/public/listings/{listing.id}/consent",
@@ -209,10 +211,14 @@ def test_consent_submission_success(client: SimpleTestClient, db_session: Sessio
     assert data["decision"] == "accept"
     assert data["email"] == "guest@example.com"
     assert data["ip_address"]
+    assert data["marketing_consent"] is True
+    assert data["marketing_consent_recorded_at"]
     log = db_session.query(ConsentLog).first()
     assert log is not None
     assert log.template_version == template.version
     assert log.email == "guest@example.com"
+    assert log.marketing_consent is True
+    assert log.marketing_consent_recorded_at is not None
 
 
 def test_faq_and_tutorial_language_fallback(client: SimpleTestClient, db_session: Session):

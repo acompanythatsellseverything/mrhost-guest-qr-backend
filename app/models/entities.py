@@ -190,6 +190,8 @@ class ConsentLog(Base, TimestampMixin):
     template_version = Column(Integer, nullable=False)
     language_code = Column(String(10), nullable=False)
     decision = Column(String(10), nullable=False)
+    marketing_consent = Column(Boolean, nullable=False, default=False)
+    marketing_consent_recorded_at = Column(DateTime(timezone=True), nullable=True)
     email = Column(String(255), nullable=True)
     ip_address = Column(String(255), nullable=True)
     user_agent = Column(String(500), nullable=True)

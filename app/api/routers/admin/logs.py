@@ -44,6 +44,8 @@ def list_consent_logs(
             "template_version": log.template_version,
             "language_code": log.language_code,
             "decision": log.decision,
+            "marketing_consent": log.marketing_consent,
+            "marketing_consent_recorded_at": log.marketing_consent_recorded_at,
             "email": log.email,
             "ip_address": log.ip_address,
             "user_agent": log.user_agent,

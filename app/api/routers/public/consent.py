@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
@@ -76,6 +76,8 @@ def submit_consent(
         template_version=template.version,
         language_code=payload.language_code,
         decision=payload.decision,
+        marketing_consent=payload.marketing_consent,
+        marketing_consent_recorded_at=datetime.now(timezone.utc),
         email=payload.email,
         ip_address=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent"),
