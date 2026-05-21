@@ -78,6 +78,8 @@ def submit_consent(
         decision=payload.decision,
         marketing_consent=payload.marketing_consent,
         marketing_consent_recorded_at=datetime.now(timezone.utc),
+        guest_name=payload.guest_name.strip(),
+        guest_nationality=payload.guest_nationality.strip(),
         email=payload.email,
         ip_address=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent"),

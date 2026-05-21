@@ -55,6 +55,8 @@ class ConsentDecisionCreate(BaseModel):
     template_version: int
     language_code: str
     decision: str
+    guest_name: str
+    guest_nationality: str
     email: str
     marketing_consent: bool = False
 
@@ -66,6 +68,8 @@ class ConsentDecisionOut(BaseModel):
     language_code: str
     marketing_consent: bool
     marketing_consent_recorded_at: datetime | None
+    guest_name: str | None
+    guest_nationality: str | None
     email: str | None
     ip_address: str | None
     created_at: datetime
