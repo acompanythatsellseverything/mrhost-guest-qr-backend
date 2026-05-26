@@ -313,40 +313,61 @@ def generate_localized_translations(
             detail="At least one non-English target language is required.",
         )
 
-    response_data = _request_openrouter_localization(
-        settings=settings or get_settings(),
-        kind=kind,
-        prompt=_build_prompt(kind, normalized_source, normalized_existing, normalized_targets),
-        schema=_build_output_schema(kind),
-    )
+    active_settings = settings or get_settings()
+    collected: dict[str, dict[str, Any]] = {}
+    pending = list(normalized_targets)
 
-    translations = response_data.get("translations")
-    if not isinstance(translations, list):
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="OpenRouter localization response did not include a translations array.",
+    while pending:
+        response_data = _request_openrouter_localization(
+            settings=active_settings,
+            kind=kind,
+            prompt=_build_prompt(
+                kind,
+                normalized_source,
+                normalized_existing,
+                pending,
+            ),
+            schema=_build_output_schema(kind),
         )
 
-    normalized: list[dict[str, Any]] = []
-    seen: set[str] = set()
-    for translation in translations:
-        if not isinstance(translation, dict):
-            continue
+        translations = response_data.get("translations")
+        if not isinstance(translations, list):
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail="OpenRouter localization response did not include a translations array.",
+            )
 
-        code = _normalize_language_code(str(translation.get("language_code", "")))
-        if code not in normalized_targets or code in seen:
-            continue
+        for translation in translations:
+            if not isinstance(translation, dict):
+                continue
 
-        entry = dict(translation)
-        entry["language_code"] = code
-        normalized.append(entry)
-        seen.add(code)
+            code = _normalize_language_code(str(translation.get("language_code", "")))
+            if code not in pending or code in collected:
+                continue
 
-    missing = [code for code in normalized_targets if code not in seen]
+            entry = dict(translation)
+            entry["language_code"] = code
+            collected[code] = entry
+
+        missing = [code for code in pending if code not in collected]
+        if not missing:
+            break
+
+        # Retry missing languages one at a time so partial model responses do not
+        # fail the whole sync operation.
+        if len(pending) == 1:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=f"OpenRouter localization response was missing languages: {pending[0]}",
+            )
+
+        pending = missing
+
+    missing = [code for code in normalized_targets if code not in collected]
     if missing:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail=f"OpenRouter localization response was missing languages: {', '.join(missing)}",
         )
 
-    return normalized
+    return [collected[code] for code in normalized_targets]
